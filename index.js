@@ -18,6 +18,10 @@ app.get('/api/courses', (reg, res) => {
     res.send([1, 2, 3]);
 });
 
+app.get('/api/courses/:id', (req, res) => {
+    res.send(req.params.id);
+});
+
 
 //We have this environmental variable called PORT
 //an env. variable is a variable that is part of the environment
@@ -27,3 +31,4 @@ app.get('/api/courses', (reg, res) => {
 //the way we do that is by using the process object
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
+
