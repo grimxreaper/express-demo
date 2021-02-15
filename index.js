@@ -34,15 +34,10 @@ app.get('/api/courses/:id', (req, res) => {
 });
 
 app.post('api/courses', (req, res) => {
-    const schema = {
-        name: Joi.string().min(3).required()
-    };
-
-    const result = Joi.validate(req.body, schema);
-
-    if (result.error) {
-        //400 Bad Request
-        res.status(400).send(result.error.details[0].message)
+    
+    const { error } = validateCourse(req.body); //getting result.error
+    if (error) {
+        res.status(400).send(error.details[0].message)
         return;
     } 
 
@@ -59,6 +54,36 @@ app.post('api/courses', (req, res) => {
     //needs to know the ID of this new obj/resource.
 
 });
+
+//Let's update a course by adding a new route handler
+//we use the 'put' method for updating resources
+app.put('/api/courses/:id', (req, res) => {
+    //Look up the course with the ID
+    //if it does not exist, return 404
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if (!course) res.status(404).send('The course with the given ID was not found.');
+    //otherwise, Validate
+    //If invalid, return a 400- bad request
+    // const result = validateCourse(req.body);
+    const { error } = validateCourse(req.body); //getting result.error
+    if (error) {
+        res.status(400).send(error.details[0].message)
+        return;
+    } 
+    //Update course
+    course.name = req.body.name;
+    //Return updated course to the client
+    res.send(course);
+})
+
+function validateCourse(course) {
+    const schema = {
+        name: Joi.string().min(3).required()
+    };
+    return Joi.validate(course, schema);
+}
+
+
 
 
 //We have this environmental variable called PORT
