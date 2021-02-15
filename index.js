@@ -44,7 +44,7 @@ app.post('api/courses', (req, res) => {
     //the reason for this is because we are assigning this ID on the server
     //so we need to return this course obj to the client bc chances are the client
     //needs to know the ID of this new obj/resource.
-    
+
 });
 
 
