@@ -29,17 +29,14 @@ app.get('/api/courses', (reg, res) => {
 
 app.get('/api/courses/:id', (req, res) => {
     const course = courses.find(c => c.id === parseInt(req.params.id));
-    if (!course) res.status(404).send('The course with the given ID was not found.');
+    if (!course) return res.status(404).send('The course with the given ID was not found.');
     res.send(course);
 });
 
 app.post('api/courses', (req, res) => {
-    
     const { error } = validateCourse(req.body); //getting result.error
-    if (error) {
-        res.status(400).send(error.details[0].message)
-        return;
-    } 
+    if (error) return res.status(400).send(error.details[0].message)
+
 
     const course = {
         id: courses.length + 1,
@@ -61,15 +58,13 @@ app.put('/api/courses/:id', (req, res) => {
     //Look up the course with the ID
     //if it does not exist, return 404
     const course = courses.find(c => c.id === parseInt(req.params.id));
-    if (!course) res.status(404).send('The course with the given ID was not found.');
+    if (!course) return res.status(404).send('The course with the given ID was not found.');
+
     //otherwise, Validate
     //If invalid, return a 400- bad request
     // const result = validateCourse(req.body);
     const { error } = validateCourse(req.body); //getting result.error
-    if (error) {
-        res.status(400).send(error.details[0].message)
-        return;
-    } 
+    if (error) return res.status(400).send(error.details[0].message)
     //Update course
     course.name = req.body.name;
     //Return updated course to the client
@@ -84,7 +79,17 @@ function validateCourse(course) {
 }
 
 
-
+app.delete('/api/courses/:id', (req, res) => {
+    //Look up the course
+    //Not existing, return 404
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if (!course) return res.status(404).send('The course with the given ID was not found.');
+    //Delete
+    const index = courses.indexOf(course);
+    courses.splice(index, 1);
+    //Return the same course
+    res.send(course);
+});
 
 //We have this environmental variable called PORT
 //an env. variable is a variable that is part of the environment
