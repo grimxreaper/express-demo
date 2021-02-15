@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+
+app.use(express.json()); //app.use is adding a piece of middleware, we call app.use to use the middleware that express.json is returning
+
 const courses = [
     { id: 1, name: 'course1'},
     { id: 2, name: 'course2'},
@@ -27,6 +30,21 @@ app.get('/api/courses/:id', (req, res) => {
     const course = courses.find(c => c.id === parseInt(req.params.id));
     if (!course) res.status(404).send('The course with the given ID was not found.');
     res.send(course);
+});
+
+app.post('api/courses', (req, res) => {
+    const course = {
+        id: courses.length + 1,
+        name: req.body.name //in order for this line to work we need to enable to parsing of JSON objects in the body of the request
+    };
+    courses.push(course); //push into array
+    //when the server creates a new object or resource
+    //it should return it in the body of the response
+    res.send(course);
+    //the reason for this is because we are assigning this ID on the server
+    //so we need to return this course obj to the client bc chances are the client
+    //needs to know the ID of this new obj/resource.
+    
 });
 
 
