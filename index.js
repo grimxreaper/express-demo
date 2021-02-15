@@ -33,6 +33,11 @@ app.get('/api/courses/:id', (req, res) => {
 });
 
 app.post('api/courses', (req, res) => {
+    if (!req.body.name || req.body.name.length < 3) {
+        //400 Bad Request
+        res.status(400).send('Name is required and should be a minimum of three characters.')
+    }
+
     const course = {
         id: courses.length + 1,
         name: req.body.name //in order for this line to work we need to enable to parsing of JSON objects in the body of the request
